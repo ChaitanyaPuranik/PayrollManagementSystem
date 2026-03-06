@@ -25,20 +25,38 @@ builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
 .AddEntityFrameworkStores<AppIdentityDbContext>()
 .AddDefaultTokenProviders();
 
+// Configure authorization policies used to restrict access based on user roles.
+// These policies define what role a user must have in order to access protected resources.
+
 builder.Services.AddAuthorization(options =>
 {
+    // Policy: AdminOnly
+    // Requires the logged-in user to have the "Admin" role.
+    // Any page or folder using this policy will only be accessible to Admin users.
     options.AddPolicy("AdminOnly", policy =>
         policy.RequireRole("Admin"));
 
+    // Policy: UserOnly
+    // Requires the logged-in user to have the "User" role.
+    // Any page or folder using this policy will only be accessible to general users.
     options.AddPolicy("UserOnly", policy =>
         policy.RequireRole("User"));
 });
 
+// Configure Razor Pages conventions for folder-level authorization.
+// Instead of putting [Authorize] attributes on every page, we secure entire folders here.
+
 builder.Services.AddRazorPages(options =>
 {
+    // Protect all pages inside /Pages/Admin/*
+    // Only users satisfying the "AdminOnly" policy (Admin role) can access these pages.
     options.Conventions.AuthorizeFolder("/Admin", "AdminOnly");
+
+    // Protect all pages inside /Pages/User/*
+    // Only users satisfying the "UserOnly" policy (User role) can access these pages.
     options.Conventions.AuthorizeFolder("/User", "UserOnly");
 });
+
 builder.Services.AddTransient<IEmailSender, EmailSender>();
 var app = builder.Build();
 
