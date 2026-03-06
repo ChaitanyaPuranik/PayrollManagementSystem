@@ -4,21 +4,124 @@
     ViewData["Title"] = "Home";
 }
 
-<div class="text-center mt-5">
-    <h1 class="display-4 fw-bold">Payroll Management System</h1>
-    <p class="lead">Manage payrolls securely with role-based access.</p>
+<div class="container">
 
-    @if (!User.Identity!.IsAuthenticated)
-    {
-        <a asp-area="Identity" asp-page="/Account/Login" class="btn btn-primary me-2">Login</a>
-        <a asp-area="Identity" asp-page="/Account/Register" class="btn btn-outline-primary">Register</a>
-    }
-    else if (User.IsInRole("Admin"))
-    {
-        <a asp-page="/Admin/Index" class="btn btn-primary">Go to Admin Dashboard</a>
-    }
-    else if (User.IsInRole("User"))
-    {
-        <a asp-page="/User/Index" class="btn btn-primary">Go to User Dashboard</a>
-    }
+    <!-- Hero Section -->
+    <div class="text-center py-5">
+        <h1 class="display-3 fw-bold">Payroll Management System</h1>
+        <p class="lead mt-3">
+            A secure and role-based payroll management platform designed to help organizations manage payroll records,
+            employee data, and payroll processing efficiently.
+        </p>
+
+        <div class="mt-4">
+            @if (!User.Identity!.IsAuthenticated)
+            {
+                <a asp-area="Identity" asp-page="/Account/Login" class="btn btn-primary btn-lg me-3">
+                    Login
+                </a>
+                <a asp-area="Identity" asp-page="/Account/Register" class="btn btn-outline-primary btn-lg">
+                    Register
+                </a>
+            }
+            else if (User.IsInRole("Admin"))
+            {
+                <a asp-page="/Admin/Index" class="btn btn-success btn-lg">
+                    Go to Admin Dashboard
+                </a>
+            }
+            else if (User.IsInRole("User"))
+            {
+                <a asp-page="/User/Index" class="btn btn-success btn-lg">
+                    Go to User Dashboard
+                </a>
+            }
+        </div>
+    </div>
+
+
+    <!-- About Section -->
+    <div class="row mt-5">
+        <div class="col-md-10 mx-auto text-center">
+            <h2 class="fw-bold mb-3">About This Application</h2>
+
+            <p>
+                The Payroll Management System is a web-based application designed to streamline payroll operations
+                within an organization. It enables administrators to manage employee payroll data, process payroll
+                runs, and maintain accurate payroll records, while employees can securely view their payroll history
+                and personal information.
+            </p>
+
+            <p>
+                The system enforces role-based access control to ensure that sensitive payroll information is only
+                accessible to authorized users. Administrators have full control over payroll processing and employee
+                records, while general users can only access their own payroll data.
+            </p>
+        </div>
+    </div>
+
+
+    <!-- Features Section -->
+    <div class="row text-center mt-5">
+        <h2 class="fw-bold mb-4">Key Features</h2>
+
+        <div class="col-md-4">
+            <h4>Role-Based Access</h4>
+            <p>
+                Separate dashboards and access permissions for administrators and general users ensure
+                secure management of payroll data.
+            </p>
+        </div>
+
+        <div class="col-md-4">
+            <h4>Payroll Tracking</h4>
+            <p>
+                Employees can easily view their payroll history, while administrators can manage payroll
+                runs and payroll records for the entire organization.
+            </p>
+        </div>
+
+        <div class="col-md-4">
+            <h4>Secure Authentication</h4>
+            <p>
+                Built using ASP.NET Core Identity to provide secure authentication, role management,
+                and user authorization.
+            </p>
+        </div>
+    </div>
+
+
+    <!-- Tech Stack Section -->
+    <div class="row mt-5 text-center">
+        <h2 class="fw-bold mb-4">Technology Stack</h2>
+
+        <div class="col-md-3">
+            <h5>ASP.NET Core</h5>
+            <p>Backend framework used to build scalable and secure web applications.</p>
+        </div>
+
+        <div class="col-md-3">
+            <h5>Razor Pages</h5>
+            <p>Page-based architecture used to build dynamic server-rendered UI.</p>
+        </div>
+
+        <div class="col-md-3">
+            <h5>SQL Server</h5>
+            <p>Relational database used for storing users, payroll data, and records.</p>
+        </div>
+
+        <div class="col-md-3">
+            <h5>Bootstrap</h5>
+            <p>Frontend framework used for responsive UI design and layout.</p>
+        </div>
+    </div>
+
+
+    <!-- Footer Info -->
+    <div class="text-center mt-5 mb-4">
+        <p class="text-muted">
+            Designed to demonstrate a secure role-based payroll management system built with modern web technologies.
+        </p>
+    </div>
+
 </div>
