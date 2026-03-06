@@ -24,8 +24,10 @@ namespace PayrollManagementSystem.Data
 
             // Employee
             builder.Entity<Employee>()
-                .HasIndex(e => e.Email)
-                .IsUnique();
+                .HasOne(e => e.AppUser)
+                .WithOne()
+                .HasForeignKey<Employee>(e => e.AppUserId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             // Optional: one employee <-> one app user
             builder.Entity<Employee>()

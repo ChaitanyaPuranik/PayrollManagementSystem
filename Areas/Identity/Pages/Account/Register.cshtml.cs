@@ -2,28 +2,24 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Text.Encodings.Web;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Extensions.Logging;
 using PayrollManagementSystem.Areas.Identity.Data;
+using PayrollManagementSystem.Data;
+using PayrollManagementSystem.Models;
 
 namespace PayrollManagementSystem.Areas.Identity.Pages.Account
 {
     public class RegisterModel : PageModel
+
+
     {
+        private readonly AppDbContext _context;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly UserManager<AppUser> _userManager;
         private readonly IUserStore<AppUser> _userStore;
@@ -36,7 +32,8 @@ namespace PayrollManagementSystem.Areas.Identity.Pages.Account
             IUserStore<AppUser> userStore,
             SignInManager<AppUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            AppDbContext context)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -44,6 +41,7 @@ namespace PayrollManagementSystem.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _context = context;
         }
 
         /// <summary>
@@ -125,6 +123,19 @@ namespace PayrollManagementSystem.Areas.Identity.Pages.Account
                     _logger.LogInformation("User created a new account with password.");
 
                     await _userManager.AddToRoleAsync(user, "User");
+
+
+                    var employee = new Employee
+                    {
+                        FullName = Input.Email,   // temporary for now
+                        Email = Input.Email,
+                        HourlyRate = 25.00m,      // temporary default value
+                        IsActive = true,
+                        AppUserId = user.Id
+                    };
+                    _context.Employees.Add(employee);
+
+                    await _context.SaveChangesAsync();
                     await _signInManager.SignInAsync(user, isPersistent: false);
 
                     return RedirectToPage("/User/Index", new { area = "" });

@@ -1,6 +1,88 @@
 ﻿@page
-@model PayrollManagementSystem.Pages.Users.IndexModel
+@model PayrollManagementSystem.Pages.User.IndexModel
 @{
+    ViewData["Title"] = "User Dashboard";
 }
 
-<h1>Users Dashboard</h1>
+<div class="container mt-4">
+    <div class="mb-4">
+        <h1 class="fw-bold">User Dashboard</h1>
+        <p class="text-muted">
+            Welcome to your payroll portal. From here, you can manage your timesheets,
+            view payroll history, and access your profile information.
+        </p>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title">My Timesheet</h5>
+                    <p class="card-text">
+                        View, edit, and submit your weekly timesheet entries.
+                    </p>
+                    <a asp-page="/User/Timesheets/Edit" class="btn btn-primary">
+                        Open Timesheet
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title">My Payrolls</h5>
+                    <p class="card-text">
+                        Review your payroll history, payment breakdown, and pay run details.
+                    </p>
+                    <a asp-page="/User/Payrolls/Index" class="btn btn-outline-primary">
+                        View Payrolls
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h5 class="card-title">My Profile</h5>
+                    <p class="card-text">
+                        Update your personal details and review your employee profile information.
+                    </p>
+                    <a asp-page="/User/Profile/Index" class="btn btn-outline-primary">
+                        View Profile
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 mt-2">
+        <div class="col-md-4">
+            <div class="card border-0 bg-light h-100">
+                <div class="card-body">
+                    <h6 class="text-muted">Current Timesheet Status</h6>
+                    <h4 class="fw-bold">@Model.CurrentTimesheetStatus</h4>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-0 bg-light h-100">
+                <div class="card-body">
+                    <h6 class="text-muted">Total Hours This Week</h6>
+                    <h4 class="fw-bold">@Model.TotalHoursThisWeek</h4>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-0 bg-light h-100">
+                <div class="card-body">
+                    <h6 class="text-muted">Latest Net Pay</h6>
+                    <h4 class="fw-bold">@Model.LatestNetPayDisplay</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using PayrollManagementSystem.Areas.Identity.Data;
 
 namespace PayrollManagementSystem.Models
 {
@@ -24,7 +25,10 @@ namespace PayrollManagementSystem.Models
         [Required]
         public bool IsActive { get; set; } = true;
 
+        // Link to Identity user
         public string? AppUserId { get; set; }
+
+        public AppUser? AppUser { get; set; }
 
         // Navigation
         public ICollection<Timesheet> Timesheets { get; set; } = new List<Timesheet>();
