@@ -1,6 +1,24 @@
 ﻿@page
 @model PayrollManagementSystem.Pages.IndexModel
 @{
+    ViewData["Title"] = "Home";
 }
 
-<h1>Welcome to the Payroll Management System</h1>
+<div class="text-center mt-5">
+    <h1 class="display-4 fw-bold">Payroll Management System</h1>
+    <p class="lead">Manage payrolls securely with role-based access.</p>
+
+    @if (!User.Identity!.IsAuthenticated)
+    {
+        <a asp-area="Identity" asp-page="/Account/Login" class="btn btn-primary me-2">Login</a>
+        <a asp-area="Identity" asp-page="/Account/Register" class="btn btn-outline-primary">Register</a>
+    }
+    else if (User.IsInRole("Admin"))
+    {
+        <a asp-page="/Admin/Index" class="btn btn-primary">Go to Admin Dashboard</a>
+    }
+    else if (User.IsInRole("User"))
+    {
+        <a asp-page="/User/Index" class="btn btn-primary">Go to User Dashboard</a>
+    }
+</div>
