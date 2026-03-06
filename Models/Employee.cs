@@ -24,10 +24,9 @@ namespace PayrollManagementSystem.Models
         [Required]
         public bool IsActive { get; set; } = true;
 
-        // Optional link to Identity user
         public string? AppUserId { get; set; }
 
-        // Navigation properties
+        // Navigation
         public ICollection<Timesheet> Timesheets { get; set; } = new List<Timesheet>();
         public ICollection<PayDetail> PayDetails { get; set; } = new List<PayDetail>();
     }

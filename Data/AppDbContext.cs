@@ -14,6 +14,7 @@ namespace PayrollManagementSystem.Data
 
         public DbSet<Employee> Employees => Set<Employee>();
         public DbSet<Timesheet> Timesheets => Set<Timesheet>();
+        public DbSet<TimesheetEntry> TimesheetEntries => Set<TimesheetEntry>();
         public DbSet<PayRun> PayRuns => Set<PayRun>();
         public DbSet<PayDetail> PayDetails => Set<PayDetail>();
 
@@ -26,25 +27,44 @@ namespace PayrollManagementSystem.Data
                 .HasIndex(e => e.Email)
                 .IsUnique();
 
-            // Timesheet relationships
+            // Optional: one employee <-> one app user
+            builder.Entity<Employee>()
+                .HasIndex(e => e.AppUserId)
+                .IsUnique()
+                .HasFilter("[AppUserId] IS NOT NULL");
+
+            // Timesheet -> Employee
             builder.Entity<Timesheet>()
                 .HasOne(t => t.Employee)
                 .WithMany(e => e.Timesheets)
                 .HasForeignKey(t => t.EmployeeId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // One employee should ideally have only one timesheet per week
+            // One weekly timesheet per employee
             builder.Entity<Timesheet>()
                 .HasIndex(t => new { t.EmployeeId, t.WeekStart })
                 .IsUnique();
 
-            // PayDetail relationships
+            // TimesheetEntry -> Timesheet
+            builder.Entity<TimesheetEntry>()
+                .HasOne(te => te.Timesheet)
+                .WithMany(t => t.Entries)
+                .HasForeignKey(te => te.TimesheetId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // One entry per work date within a timesheet
+            builder.Entity<TimesheetEntry>()
+                .HasIndex(te => new { te.TimesheetId, te.WorkDate })
+                .IsUnique();
+
+            // PayDetail -> Employee
             builder.Entity<PayDetail>()
                 .HasOne(pd => pd.Employee)
                 .WithMany(e => e.PayDetails)
                 .HasForeignKey(pd => pd.EmployeeId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            // PayDetail -> PayRun
             builder.Entity<PayDetail>()
                 .HasOne(pd => pd.PayRun)
                 .WithMany(pr => pr.PayDetails)

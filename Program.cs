@@ -4,8 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using PayrollManagementSystem.Areas.Identity.Data;
 using PayrollManagementSystem.Services;
 using PayrollManagementSystem.Data;
-using PayrollManagementSystem.Services.Implementations;
 using PayrollManagementSystem.Services.Interfaces;
+using PayrollManagementSystem.Services.Implementations;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +16,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(connectionString));
 
 builder.Services.AddScoped<IPayrollService, PayrollService>();
+builder.Services.AddScoped<ITimesheetService, TimesheetService>();
 
 builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
 {

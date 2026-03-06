@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PayrollManagementSystem.Models
 {
@@ -11,17 +10,22 @@ namespace PayrollManagementSystem.Models
         [Required]
         public int EmployeeId { get; set; }
 
+        // Start of the week, e.g. Sunday or Monday depending on your rule
         [Required]
         public DateTime WeekStart { get; set; }
 
         [Required]
-        [Column(TypeName = "decimal(5,2)")]
-        public decimal HoursWorked { get; set; }
+        [StringLength(30)]
+        public string Status { get; set; } = "Draft";
+
+        public DateTime? SubmittedAt { get; set; }
+        public DateTime? ApprovedAt { get; set; }
 
         [StringLength(500)]
-        public string? Notes { get; set; }
+        public string? Comments { get; set; }
 
-        // Navigation property
+        // Navigation
         public Employee? Employee { get; set; }
+        public ICollection<TimesheetEntry> Entries { get; set; } = new List<TimesheetEntry>();
     }
 }
