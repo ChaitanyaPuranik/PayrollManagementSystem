@@ -6,12 +6,13 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PayrollManagementSystem.Areas.Identity.Data;
+using PayrollManagementSystem.Data;
 
 #nullable disable
 
 namespace PayrollManagementSystem.Migrations
 {
-    [DbContext(typeof(AppIdentityDbContext))]
+    [DbContext(typeof(AppDbContext))]
     [Migration("20260302030211_InitialIdentity")]
     partial class InitialIdentity
     {

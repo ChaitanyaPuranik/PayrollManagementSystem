@@ -3,14 +3,19 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using PayrollManagementSystem.Areas.Identity.Data;
 using PayrollManagementSystem.Services;
+using PayrollManagementSystem.Data;
+using PayrollManagementSystem.Services.Implementations;
+using PayrollManagementSystem.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = builder.Configuration.GetConnectionString("IdentityDbContextConnection")
     ?? throw new InvalidOperationException("Connection string 'IdentityDbContextConnection' not found.");
 
-builder.Services.AddDbContext<AppIdentityDbContext>(options =>
+builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(connectionString));
+
+builder.Services.AddScoped<IPayrollService, PayrollService>();
 
 builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
 {
@@ -22,7 +27,7 @@ builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
     options.SignIn.RequireConfirmedPhoneNumber = false;
 })
 .AddRoles<IdentityRole>()
-.AddEntityFrameworkStores<AppIdentityDbContext>()
+.AddEntityFrameworkStores<AppDbContext>()
 .AddDefaultTokenProviders();
 
 // Configure authorization policies used to restrict access based on user roles.
