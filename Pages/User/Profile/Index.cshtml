@@ -1,4 +1,95 @@
 ﻿@page
 @model PayrollManagementSystem.Pages.User.Profile.IndexModel
 @{
+    ViewData["Title"] = "My Profile";
 }
+
+<partial name="_UserPartial" />
+
+<div class="container mt-4">
+    <div class="mb-4">
+        <h1 class="fw-bold">My Profile</h1>
+        <p class="text-muted">
+            Review your account and employment information.
+        </p>
+    </div>
+
+    <div class="row g-4">
+        <!-- Section 1: Profile Summary -->
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100 border-0">
+                <div class="card-body p-4">
+                    <h4 class="card-title fw-bold mb-3">Profile Summary</h4>
+
+                    <div class="mb-3">
+                        <label class="text-muted small d-block">Full Name</label>
+                        <div class="fs-5">@Model.FullName</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="text-muted small d-block">Email</label>
+                        <div class="fs-5">@Model.Email</div>
+                    </div>
+
+                    <div>
+                        <label class="text-muted small d-block">Role</label>
+                        <div class="fs-5">@Model.Role</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2: Employment Details -->
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100 border-0">
+                <div class="card-body p-4">
+                    <h4 class="card-title fw-bold mb-3">Employment Details</h4>
+
+                    <div class="mb-3">
+                        <label class="text-muted small d-block">Employee ID</label>
+                        <div class="fs-5">@Model.EmployeeId</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="text-muted small d-block">Hourly Rate</label>
+                        <div class="fs-5">$@Model.HourlyRate.ToString("0.00")</div>
+                    </div>
+
+                    <div>
+                        <label class="text-muted small d-block">Status</label>
+                        <div class="fs-5">
+                            @if (Model.IsActive)
+                            {
+                                <span class="badge bg-success fs-6">Active</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger fs-6">Inactive</span>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 3: Account Actions -->
+    <div class="card shadow-sm border-0 mt-4">
+        <div class="card-body p-4">
+            <h4 class="card-title fw-bold mb-3">Account Actions</h4>
+
+            <div class="d-flex flex-wrap gap-2">
+                <a asp-area="Identity"
+                   asp-page="/Account/Manage/ChangePassword"
+                   class="btn btn-primary">
+                    Change Password
+                </a>
+
+                <a asp-page="/User/Profile/Edit"
+                   class="btn btn-outline-primary">
+                    Edit Profile
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
