@@ -4,85 +4,82 @@
     ViewData["Title"] = "User Dashboard";
 }
 
+<partial name="_UserPartial" />
+
 <div class="container mt-4">
     <div class="mb-4">
         <h1 class="fw-bold">User Dashboard</h1>
         <p class="text-muted">
-            Welcome to your payroll portal. From here, you can manage your timesheets,
-            view payroll history, and access your profile information.
+            Review the status of your most recent weekly timesheets.
         </p>
     </div>
 
-    <div class="row g-4">
-        <div class="col-md-4">
-            <div class="card shadow-sm h-100">
-                <div class="card-body">
-                    <h5 class="card-title">My Timesheet</h5>
-                    <p class="card-text">
-                        View, edit, and submit your weekly timesheet entries.
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div>
+                    <h4 class="mb-1 fw-bold">Status of your last timesheets</h4>
+                    <p class="text-muted mb-0">
+                        Showing the most recent 5 weekly timesheets.
                     </p>
-                    <a asp-page="/User/Timesheets/Edit" class="btn btn-primary">
-                        Open Timesheet
-                    </a>
                 </div>
             </div>
-        </div>
 
-        <div class="col-md-4">
-            <div class="card shadow-sm h-100">
-                <div class="card-body">
-                    <h5 class="card-title">My Payrolls</h5>
-                    <p class="card-text">
-                        Review your payroll history, payment breakdown, and pay run details.
-                    </p>
-                    <a asp-page="/User/Payrolls/Index" class="btn btn-outline-primary">
-                        View Payrolls
-                    </a>
-                </div>
-            </div>
-        </div>
+            @if (Model.RecentTimesheets.Any())
+            {
+                <div class="list-group list-group-flush">
+                    @foreach (var item in Model.RecentTimesheets)
+                    {
+                        <div class="list-group-item px-0 py-3 border-bottom">
+                            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
 
-        <div class="col-md-4">
-            <div class="card shadow-sm h-100">
-                <div class="card-body">
-                    <h5 class="card-title">My Profile</h5>
-                    <p class="card-text">
-                        Update your personal details and review your employee profile information.
-                    </p>
-                    <a asp-page="/User/Profile/Index" class="btn btn-outline-primary">
-                        View Profile
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
+                                <div>
+                                    <div class="fw-semibold">
+                                        Week of @item.WeekStartDisplay to @item.WeekEndDisplay
+                                    </div>
+                                </div>
 
-    <div class="row g-4 mt-2">
-        <div class="col-md-4">
-            <div class="card border-0 bg-light h-100">
-                <div class="card-body">
-                    <h6 class="text-muted">Current Timesheet Status</h6>
-                    <h4 class="fw-bold">@Model.CurrentTimesheetStatus</h4>
-                </div>
-            </div>
-        </div>
+                                <div class="d-flex align-items-center gap-3">
 
-        <div class="col-md-4">
-            <div class="card border-0 bg-light h-100">
-                <div class="card-body">
-                    <h6 class="text-muted">Total Hours This Week</h6>
-                    <h4 class="fw-bold">@Model.TotalHoursThisWeek</h4>
-                </div>
-            </div>
-        </div>
+                                    <div>
+                                        @if (item.Status == "Submitted")
+                                        {
+                                            <span class="badge bg-primary fs-6">Submitted</span>
+                                        }
+                                        else if (item.Status == "Approved")
+                                        {
+                                            <span class="badge bg-success fs-6">Approved</span>
+                                        }
+                                        else if (item.Status == "Draft")
+                                        {
+                                            <span class="badge bg-secondary fs-6">Draft</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-warning text-dark fs-6">@item.Status</span>
+                                        }
+                                    </div>
 
-        <div class="col-md-4">
-            <div class="card border-0 bg-light h-100">
-                <div class="card-body">
-                    <h6 class="text-muted">Latest Net Pay</h6>
-                    <h4 class="fw-bold">@Model.LatestNetPayDisplay</h4>
+                                    <a asp-page="/User/Timesheets/Edit"
+                                       asp-route-weekStart="@item.WeekStart.ToString("yyyy-MM-dd")"
+                                       class="btn btn-sm btn-outline-primary">
+                                        View Timesheet
+                                    </a>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    }
+
                 </div>
-            </div>
+            }
+            else
+            {
+                <div class="alert alert-light border mt-3 mb-0">
+                    No timesheet records found for the past few weeks.
+                </div>
+            }
         </div>
     </div>
 </div>

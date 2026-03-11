@@ -1,0 +1,36 @@
+﻿@using Microsoft.AspNetCore.Mvc.RazorPages
+@{
+    var currentPath = Context.Request.Path.Value ?? "";
+}
+
+@if (User.Identity != null && User.Identity.IsAuthenticated && User.IsInRole("User"))
+{
+    <div class="bg-light border-bottom mb-4">
+        <div class="container">
+            <ul class="nav nav-pills py-2">
+
+                <li class="nav-item">
+                    <a class="nav-link @(currentPath.Contains("/User/Index") ? "active" : "")"
+                       asp-page="/User/Index">
+                        Dashboard
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link @(currentPath.Contains("/User/Timesheets") ? "active" : "")"
+                       asp-page="/User/Timesheets/Edit">
+                        Timesheet
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link @(currentPath.Contains("/User/Profile") ? "active" : "")"
+                       asp-page="/User/Profile/Index">
+                        Profile
+                    </a>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+}
