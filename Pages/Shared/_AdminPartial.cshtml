@@ -1,0 +1,44 @@
+﻿@using Microsoft.AspNetCore.Mvc.RazorPages
+@{
+    var currentPath = Context.Request.Path.Value ?? "";
+}
+
+@if (User.Identity != null && User.Identity.IsAuthenticated && User.IsInRole("Admin"))
+{
+    <div class="bg-light border-bottom mb-4">
+        <div class="container">
+            <ul class="nav py-2">
+
+                <li class="nav-item">
+                    <a class="nav-link" asp-page="/Admin/Index">Dashboard</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" asp-page="/Admin/Timesheets/Index">
+                        Review Timesheets
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" asp-page="/Admin/PayrollRuns/Generate">
+                        Generate Payroll
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" asp-page="/Admin/PayrollRuns/Index">
+                        Previous Pay Runs
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" asp-page="/Admin/PayrollReports/Index">
+                        Payroll Reports
+                    </a>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+    
+}

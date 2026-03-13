@@ -1,6 +1,101 @@
 ﻿@page
 @model PayrollManagementSystem.Pages.Admin.IndexModel
 @{
+    ViewData["Title"] = "Admin Dashboard";
 }
 
-<h1>Admin Dashboard</h1>
+<partial name="_AdminPartial" />
+
+<div class="container mt-4">
+    <div class="mb-4">
+        <h1 class="fw-bold">Admin Dashboard</h1>
+        <p class="text-muted mb-0">
+            Monitor submitted timesheets and payroll activity from one place.
+        </p>
+    </div>
+
+    <!-- Summary Cards -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-4">
+            <div class="card border-0 bg-light shadow-sm h-100">
+                <div class="card-body">
+                    <h6 class="text-muted">Submitted Timesheets</h6>
+                    <h3 class="fw-bold mb-0">@Model.SubmittedTimesheetCount</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-0 bg-light shadow-sm h-100">
+                <div class="card-body">
+                    <h6 class="text-muted">Total Submitted Hours</h6>
+                    <h3 class="fw-bold mb-0">@Model.TotalSubmittedHours.ToString("0.##")</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-0 bg-light shadow-sm h-100">
+                <div class="card-body">
+                    <h6 class="text-muted">Last Payroll Run</h6>
+                    <div class="fw-semibold">@Model.LastPayrollRunDisplay</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Submitted Timesheets -->
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div>
+                    <h4 class="fw-bold mb-1">Recent Submitted Timesheets</h4>
+                    <p class="text-muted mb-0">
+                        Review the latest submitted weekly timesheets from employees.
+                    </p>
+                </div>
+
+                <a asp-page="/Admin/Timesheets/Index" class="btn btn-outline-primary">
+                    View All
+                </a>
+            </div>
+
+            @if (Model.RecentSubmittedTimesheets.Any())
+            {
+                <div class="list-group list-group-flush">
+                    @foreach (var item in Model.RecentSubmittedTimesheets)
+                    {
+                        <div class="list-group-item px-0 py-3 border-bottom">
+                            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                                <div>
+                                    <div class="fw-semibold">@item.EmployeeName</div>
+                                    <div class="text-muted small">
+                                        Week of @item.WeekStartDisplay to @item.WeekEndDisplay
+                                    </div>
+                                </div>
+
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="fw-semibold text-muted">
+                                        @item.TotalHours.ToString("0.##") hrs
+                                    </div>
+
+                                    <a asp-page="/Admin/Timesheets/Review"
+                                       asp-route-timesheetId="@item.TimesheetId"
+                                       class="btn btn-sm btn-outline-primary">
+                                        Review
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-light border mb-0">
+                    No submitted timesheets are available right now.
+                </div>
+            }
+        </div>
+    </div>
+</div>

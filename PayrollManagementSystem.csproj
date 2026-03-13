@@ -19,7 +19,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Pages\Admin\Users\" />
     <Folder Include="Pages\Admin\PayrollSearch\" />
     <Folder Include="Pages\Admin\PayrollRuns\" />
   </ItemGroup>

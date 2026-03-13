@@ -1,0 +1,90 @@
+﻿@page
+@model PayrollManagementSystem.Pages.Admin.Timesheets.IndexModel
+@{
+    ViewData["Title"] = "Submitted Timesheets";
+}
+
+<partial name="_AdminPartial" />
+
+<div class="container mt-4">
+    <div class="mb-4">
+        <h1 class="fw-bold">Submitted Timesheets</h1>
+        <p class="text-muted mb-0">
+            Review employee timesheets that have been submitted for payroll processing.
+        </p>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-4">
+            @if (Model.SubmittedTimesheets.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Employee</th>
+                                <th>Week</th>
+                                <th>Status</th>
+                                <th>Total Hours</th>
+                                <th>Submitted At</th>
+                                <th class="text-end">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.SubmittedTimesheets)
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="fw-semibold">@item.EmployeeName</div>
+                                        <div class="text-muted small">@item.EmployeeEmail</div>
+                                    </td>
+
+                                    <td>
+                                        Week of @item.WeekStartDisplay to @item.WeekEndDisplay
+                                    </td>
+
+                                    <td>
+                                        @if (item.Status == "Submitted")
+                                        {
+                                            <span class="badge bg-primary">Submitted</span>
+                                        }
+                                        else if (item.Status == "Approved")
+                                        {
+                                            <span class="badge bg-success">Approved</span>
+                                        }
+                                        else if (item.Status == "Draft")
+                                        {
+                                            <span class="badge bg-secondary">Draft</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-warning text-dark">@item.Status</span>
+                                        }
+                                    </td>
+
+                                    <td>@item.TotalHours.ToString("0.##")</td>
+
+                                    <td>@item.SubmittedAtDisplay</td>
+
+                                    <td class="text-end">
+                                        <a asp-page="/Admin/Timesheets/Review"
+                                           asp-route-timesheetId="@item.TimesheetId"
+                                           class="btn btn-sm btn-outline-primary">
+                                            Review
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-light border mb-0">
+                    No submitted timesheets are available right now.
+                </div>
+            }
+        </div>
+    </div>
+</div>

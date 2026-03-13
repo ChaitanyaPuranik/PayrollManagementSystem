@@ -121,5 +121,23 @@ namespace PayrollManagementSystem.Services.Implementations
                 .Where(e => e.TimesheetId == timesheetId)
                 .SumAsync(e => e.HoursWorked);
         }
+
+        public async Task<List<Timesheet>> GetSubmittedTimesheetsAsync()
+        {
+            return await _context.Timesheets
+                .Include(t => t.Employee)
+                .Include(t => t.Entries)
+                .Where(t => t.Status == "Submitted")
+                .OrderByDescending(t => t.SubmittedAt)
+                .ToListAsync();
+        }
+
+        public async Task<Timesheet?> GetTimesheetWithDetailsAsync(int timesheetId)
+        {
+            return await _context.Timesheets
+                .Include(t => t.Employee)
+                .Include(t => t.Entries.OrderBy(e => e.WorkDate))
+                .FirstOrDefaultAsync(t => t.TimesheetId == timesheetId);
+        }
     }
 }

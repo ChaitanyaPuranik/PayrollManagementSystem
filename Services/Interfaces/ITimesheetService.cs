@@ -17,5 +17,8 @@ namespace PayrollManagementSystem.Services.Interfaces
         Task SubmitTimesheetAsync(int timesheetId);
 
         Task<decimal> GetWeeklyTotalHoursAsync(int timesheetId);
+
+        Task<List<Timesheet>> GetSubmittedTimesheetsAsync();
+        Task<Timesheet?> GetTimesheetWithDetailsAsync(int timesheetId);
     }
 }
