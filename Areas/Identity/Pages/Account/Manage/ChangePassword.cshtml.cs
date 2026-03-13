@@ -118,11 +118,13 @@ namespace PayrollManagementSystem.Areas.Identity.Pages.Account.Manage
                 return Page();
             }
 
-            await _signInManager.RefreshSignInAsync(user);
             _logger.LogInformation("User changed their password successfully.");
-            StatusMessage = "Your password has been changed.";
 
-            return RedirectToPage();
+            await _signInManager.SignOutAsync();
+
+            TempData["StatusMessage"] = "Password changed successfully. Please log in again.";
+
+            return RedirectToPage("/Account/Login", new { area = "Identity" });
         }
     }
 }
