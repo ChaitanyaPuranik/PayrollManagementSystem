@@ -1,0 +1,65 @@
+﻿@page
+@model PayrollManagementSystem.Pages.Admin.PayrollRuns.IndexModel
+@{
+    ViewData["Title"] = "Previous Pay Runs";
+}
+
+<partial name="_AdminPartial" />
+
+<div class="container mt-4">
+    <div class="mb-4">
+        <h1 class="fw-bold">Previous Pay Runs</h1>
+        <p class="text-muted mb-0">
+            View previously generated payroll runs.
+        </p>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-4">
+            @if (Model.PayRuns.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Pay Run ID</th>
+                                <th>Week</th>
+                                <th>Run Date</th>
+                                <th>Status</th>
+                                <th class="text-end">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.PayRuns)
+                            {
+                                <tr>
+                                    <td>@item.PayRunId</td>
+                                    <td>
+                                        @item.WeekStart.ToString("ddd yyyy.MM.dd")
+                                        to
+                                        @item.WeekEnd.ToString("ddd yyyy.MM.dd")
+                                    </td>
+                                    <td>@item.RunDate.ToString("MMM dd, yyyy hh:mm tt")</td>
+                                    <td>@item.Status</td>
+                                    <td class="text-end">
+                                        <a asp-page="/Admin/PayrollRuns/Report"
+                                           asp-route-payRunId="@item.PayRunId"
+                                           class="btn btn-sm btn-outline-primary">
+                                            View Report
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-light border mb-0">
+                    No payroll runs have been generated yet.
+                </div>
+            }
+        </div>
+    </div>
+</div>
