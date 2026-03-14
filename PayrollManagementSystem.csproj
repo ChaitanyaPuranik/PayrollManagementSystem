@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -16,9 +16,16 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.23" />
+
+    <Compile Remove="PayrollManagementSystem.Test\**\*.cs" />
+    <EmbeddedResource Remove="PayrollManagementSystem.Test\**\*" />
+    <Content Remove="PayrollManagementSystem.Test\**\*" />
+    <None Remove="PayrollManagementSystem.Test\**\*" />
+	  
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="PayrollManagementSystem.Test\" />
     <Folder Include="Pages\Admin\PayrollSearch\" />
   </ItemGroup>
 
