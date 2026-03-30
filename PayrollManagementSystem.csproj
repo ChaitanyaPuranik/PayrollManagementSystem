@@ -4,6 +4,8 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+	<AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
+	<EnableDefaultItems>true</EnableDefaultItems>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,17 +18,27 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.23" />
-
-    <Compile Remove="PayrollManagementSystem.Test\**\*.cs" />
-    <EmbeddedResource Remove="PayrollManagementSystem.Test\**\*" />
-    <Content Remove="PayrollManagementSystem.Test\**\*" />
-    <None Remove="PayrollManagementSystem.Test\**\*" />
-	  
+	<Content Update="web.config">
+		<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	</Content>
   </ItemGroup>
+	
+	<!-- Ignore test project -->
+	<ItemGroup>
+		<Compile Remove="PayrollManagementSystem.Test\**\*.cs" />
+		<EmbeddedResource Remove="PayrollManagementSystem.Test\**\*" />
+		<Content Remove="PayrollManagementSystem.Test\**\*" />
+		<None Remove="PayrollManagementSystem.Test\**\*" />
+	    <Compile Remove="PayrollManagementSystem.Test\Tests\PayrollServiceIntegrationTests.cs" />
+	    <Compile Remove="PayrollManagementSystem.Test\Tests\TimesheetServiceTests.cs" />
+	</ItemGroup>
+	
+
 
   <ItemGroup>
-    <Folder Include="PayrollManagementSystem.Test\" />
+    <Folder Include="logs\" />
     <Folder Include="Pages\Admin\PayrollSearch\" />
+    <Folder Include="PayrollManagementSystem.Test\Tests\Integration\" />
   </ItemGroup>
 
 </Project>

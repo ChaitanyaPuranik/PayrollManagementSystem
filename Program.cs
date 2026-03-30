@@ -13,7 +13,12 @@ var connectionString = builder.Configuration.GetConnectionString("IdentityDbCont
     ?? throw new InvalidOperationException("Connection string 'IdentityDbContextConnection' not found.");
 
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(connectionString));
+    options.UseSqlServer(connectionString, sqlOptions =>
+        sqlOptions.EnableRetryOnFailure(
+            maxRetryCount: 5,
+            maxRetryDelay: TimeSpan.FromSeconds(10),
+            errorNumbersToAdd: null
+        )));
 
 builder.Services.AddScoped<IPayrollService, PayrollService>();
 builder.Services.AddScoped<ITimesheetService, TimesheetService>();
@@ -85,6 +90,9 @@ app.MapRazorPages();
 // Seed roles + admin
 using (var scope = app.Services.CreateScope())
 {
+
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    //db.Database.Migrate();
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<AppUser>>();
 
