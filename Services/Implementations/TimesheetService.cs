@@ -85,6 +85,11 @@ namespace PayrollManagementSystem.Services.Implementations
                     throw new InvalidOperationException("Hours worked must be between 0 and 24.");
             }
 
+            // The database allows one entry per work date; report it clearly instead of
+            // surfacing a unique-index violation from SaveChanges.
+            if (entries.GroupBy(e => e.WorkDate.Date).Any(g => g.Count() > 1))
+                throw new InvalidOperationException("A timesheet can only have one entry per work date.");
+
             // Replace existing entries for simplicity
             _context.TimesheetEntries.RemoveRange(timesheet.Entries);
 
@@ -105,6 +110,9 @@ namespace PayrollManagementSystem.Services.Implementations
 
             if (timesheet == null)
                 throw new InvalidOperationException("Timesheet not found.");
+
+            if (timesheet.Status != "Draft")
+                throw new InvalidOperationException("Only draft timesheets can be submitted.");
 
             if (!timesheet.Entries.Any())
                 throw new InvalidOperationException("Cannot submit an empty timesheet.");

@@ -102,16 +102,24 @@ using (var scope = app.Services.CreateScope())
             await roleManager.CreateAsync(new IdentityRole(role));
     }
 
-    string email = "admin@payroll.com";
-    string pass = "Admin@123";
+    // The first admin account comes from configuration (user-secrets locally, app settings
+    // in Azure), never from source code. Without both values no admin account is created.
+    string? email = app.Configuration["Seed:AdminEmail"];
+    string? pass = app.Configuration["Seed:AdminPassword"];
 
-    var existing = await userManager.FindByEmailAsync(email);
-    if (existing == null)
+    if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(pass))
+    {
+        app.Logger.LogWarning("Seed:AdminEmail / Seed:AdminPassword are not configured; skipping admin account seeding.");
+    }
+    else if (await userManager.FindByEmailAsync(email) == null)
     {
         var user = new AppUser { UserName = email, Email = email, EmailConfirmed = true };
         var result = await userManager.CreateAsync(user, pass);
+
         if (result.Succeeded)
             await userManager.AddToRoleAsync(user, "Admin");
+        else
+            app.Logger.LogError("Admin seeding failed: {Errors}", string.Join("; ", result.Errors.Select(e => e.Description)));
     }
 }
 
