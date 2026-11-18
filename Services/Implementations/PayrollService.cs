@@ -43,15 +43,26 @@ namespace PayrollManagementSystem.Services.Implementations
             return Math.Round(grossPay - tax, 2);
         }
 
+        private const string AlreadyRunMessage = "Payroll has already been run for this week.";
+
         public async Task<int> RunPayrollAsync(DateTime weekStart)
         {
             DateTime normalizedWeekStart = weekStart.Date;
 
+            // The SQL Server provider is configured with a retrying execution strategy, which
+            // refuses user-initiated transactions unless the whole unit of work (checks, queries,
+            // transaction) runs inside strategy.ExecuteAsync so it can be retried as one piece.
+            var strategy = _context.Database.CreateExecutionStrategy();
+            return await strategy.ExecuteAsync(() => RunPayrollInTransactionAsync(normalizedWeekStart));
+        }
+
+        private async Task<int> RunPayrollInTransactionAsync(DateTime normalizedWeekStart)
+        {
             bool payrollAlreadyExists = await _context.PayRuns
                 .AnyAsync(pr => pr.WeekStart == normalizedWeekStart);
 
             if (payrollAlreadyExists)
-                throw new InvalidOperationException("Payroll has already been run for this week.");
+                throw new InvalidOperationException(AlreadyRunMessage);
 
             var timesheets = await _context.Timesheets
                 .Include(t => t.Employee)
@@ -66,6 +77,7 @@ namespace PayrollManagementSystem.Services.Implementations
                 throw new InvalidOperationException("No submitted timesheets found for the selected week.");
 
             using var transaction = await _context.Database.BeginTransactionAsync();
+            bool insertingPayRun = false;
 
             try
             {
@@ -77,7 +89,10 @@ namespace PayrollManagementSystem.Services.Implementations
                 };
 
                 _context.PayRuns.Add(payRun);
+
+                insertingPayRun = true;
                 await _context.SaveChangesAsync();
+                insertingPayRun = false;
 
                 foreach (var timesheet in timesheets)
                 {
@@ -103,9 +118,22 @@ namespace PayrollManagementSystem.Services.Implementations
 
                 return payRun.PayRunId;
             }
+            catch (DbUpdateException) when (insertingPayRun)
+            {
+                await transaction.RollbackAsync();
+                _context.ChangeTracker.Clear();
+
+                // The unique index on PayRun.WeekStart rejects a second run that slipped past the
+                // check above (two admins generating the same week at the same moment).
+                if (await _context.PayRuns.AnyAsync(pr => pr.WeekStart == normalizedWeekStart))
+                    throw new InvalidOperationException(AlreadyRunMessage);
+
+                throw;
+            }
             catch
             {
                 await transaction.RollbackAsync();
+                _context.ChangeTracker.Clear();
                 throw;
             }
         }

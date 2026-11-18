@@ -59,6 +59,11 @@ namespace PayrollManagementSystem.Data
                 .HasIndex(te => new { te.TimesheetId, te.WorkDate })
                 .IsUnique();
 
+            // One pay run per week: the database, not just application code, rejects duplicates
+            builder.Entity<PayRun>()
+                .HasIndex(pr => pr.WeekStart)
+                .IsUnique();
+
             // PayDetail -> Employee
             builder.Entity<PayDetail>()
                 .HasOne(pd => pd.Employee)

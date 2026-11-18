@@ -96,6 +96,21 @@ namespace Tests.Integration
         }
 
         [Fact]
+        public async Task Database_ShouldRejectASecondPayRunForTheSameWeek()
+        {
+            // Guards the race where two runs both pass the application-level check:
+            // the unique index on PayRun.WeekStart must reject the second insert.
+            using var db = new SqliteTestDatabase();
+            db.Context.PayRuns.Add(new PayrollManagementSystem.Models.PayRun { WeekStart = Week1 });
+            await db.Context.SaveChangesAsync();
+
+            using var other = db.NewContext();
+            other.PayRuns.Add(new PayrollManagementSystem.Models.PayRun { WeekStart = Week1 });
+
+            await Assert.ThrowsAsync<DbUpdateException>(() => other.SaveChangesAsync());
+        }
+
+        [Fact]
         public async Task RunPayrollAsync_ShouldThrow_WhenNoTimesheetIsSubmitted()
         {
             using var db = new SqliteTestDatabase();
